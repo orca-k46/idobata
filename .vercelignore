@@ -1,7 +1,9 @@
 backend/
+idea-discussion/
+policy-edit/
 node_modules/
 .git/
 *.log
 .env*
-package.json
-package-lock.json
+/package.json
+/package-lock.json
