@@ -3,7 +3,7 @@ import MarkdownRenderer from "../components/common/MarkdownRenderer";
 import { useSiteConfig } from "../contexts/SiteConfigContext";
 
 const About = () => {
-  const breadcrumbItems = [{ label: "このサイトについて", href: "/about" }];
+  const breadcrumbItems = [{ label: "システムについて", href: "/about" }];
 
   const { siteConfig, loading } = useSiteConfig();
 
@@ -19,10 +19,10 @@ const About = () => {
 
       <div className="text-center mt-12">
         <a
-          href="https://xxparty-policy.com"
+          href="https://github.com/kaze-no-tani"
           className="text-sm text-neutral-500 hover:text-neutral-700"
         >
-          © xxparty-policy.com
+          © 風の谷プロジェクト
         </a>
       </div>
     </div>

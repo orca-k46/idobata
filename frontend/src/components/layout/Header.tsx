@@ -1,14 +1,16 @@
 import {
-  BookOpen,
-  HeartHandshake,
+  FileText,
+  Users,
   Home,
   Menu,
   UserRound,
   X,
+  Search,
+  Network,
 } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useSiteConfig } from "../../contexts/SiteConfigContext";
+// import { useSiteConfig } from "../../contexts/SiteConfigContext";
 import { Button } from "../ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "../ui/sheet";
 // ヘッダーの高さ定数
@@ -19,30 +21,37 @@ const LOGO_PATH = "/images/idobata-logo.svg";
 
 const NAV_ITEMS = [
   {
-    label: "トップ",
+    label: "ダッシュボード",
     icon: Home,
-    to: "/top",
+    to: "/dashboard",
   },
   {
-    label: "はじめに",
-    icon: HeartHandshake,
-    to: "/about",
+    label: "チーム",
+    icon: Users,
+    to: "/teams",
   },
   {
-    label: "使い方",
-    icon: BookOpen,
-    to: "/howto",
+    label: "文書検索",
+    icon: Search,
+    to: "/documents/search",
   },
   {
-    label: "マイページ",
+    label: "ナレッジグラフ",
+    icon: Network,
+    to: "/knowledge-graph",
+  },
+  {
+    label: "プロフィール",
     icon: UserRound,
-    to: "/mypage",
+    to: "/profile",
   },
 ];
 
 const Header: React.FC = () => {
   const location = useLocation();
-  const { siteConfig, loading } = useSiteConfig();
+  // const { siteConfig, loading } = useSiteConfig();
+  const siteConfig = { title: "風の谷 文書管理システム" };
+  const loading = false;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b-2 border-[#2D80FF] bg-white">
@@ -50,12 +59,12 @@ const Header: React.FC = () => {
         {/* 左側：タイトル・ロゴエリア */}
         <div className="flex flex-col md:flex-row md:items-end gap-1 md:gap-3">
           <Link
-            to="/top"
+            to="/dashboard"
             className="font-bold text-lg md:text-xl tracking-wider text-[#27272A] leading-none hover:text-[#2D80FF] transition-colors cursor-pointer"
           >
             {loading
               ? "..."
-              : siteConfig?.title || "XX党みんなの政策フォーラム"}
+              : siteConfig?.title || "風の谷 文書管理システム"}
           </Link>
           <div className="flex items-center gap-1">
             <span className="text-[8px] font-bold text-[#94B9F9] leading-[2em] tracking-[0.0375em]">

@@ -1,19 +1,29 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
-import AppLayout from "./components/AppLayout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PageLayout from "./components/layout/PageLayout";
-import { AuthProvider } from "./contexts/AuthContext";
-import { MockProvider } from "./contexts/MockContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
+// import { AuthProvider } from "./contexts/AuthContext";
+// import { ThemeProvider } from "./contexts/ThemeContext";
 import About from "./pages/About";
-import CommentsPage from "./pages/CommentsPage";
-import DataPage from "./pages/DataPage";
-import HowTo from "./pages/HowTo";
-import MainPage from "./pages/MainPage";
-import MyPage from "./pages/MyPage";
-import QuestionDetail from "./pages/QuestionDetail";
-import ThemeDetail from "./pages/ThemeDetail";
-import Themes from "./pages/Themes";
-import Top from "./pages/Top";
+import DocumentDetail from "./pages/DocumentDetail";
+import {
+  SimpleDashboard,
+  SimpleTeams,
+  SimpleTeamDetail,
+  SimpleDocumentEditor,
+  SimpleKnowledgeGraph,
+  SimpleMyPage,
+  SimpleDocumentSearch,
+} from "./pages/SimplePages";
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return <Outlet />;
@@ -23,30 +33,17 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ThemeProvider>
-        <AuthProvider>
-          <MockProvider>
-            <App />
-          </MockProvider>
-        </AuthProvider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     ),
     children: [
-      { index: true, element: <Navigate to="/top" replace /> },
+      { index: true, element: <Navigate to="/dashboard" replace /> },
       {
-        path: "legacy",
-        element: <AppLayout />,
-        children: [
-          { index: true, element: <MainPage /> },
-          { path: "data", element: <DataPage /> },
-          { path: "*", element: <Navigate to="/old" replace /> },
-        ],
-      },
-      {
-        path: "top",
+        path: "dashboard",
         element: (
           <PageLayout>
-            <Top />
+            <SimpleDashboard />
           </PageLayout>
         ),
       },
@@ -59,50 +56,66 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "howto",
+        path: "teams",
         element: (
           <PageLayout>
-            <HowTo />
+            <SimpleTeams />
           </PageLayout>
         ),
       },
       {
-        path: "themes",
+        path: "teams/:teamId",
         element: (
           <PageLayout>
-            <Themes />
+            <SimpleTeamDetail />
           </PageLayout>
         ),
       },
       {
-        path: "themes/:themeId",
+        path: "documents/search",
         element: (
           <PageLayout>
-            <ThemeDetail />
+            <SimpleDocumentSearch />
           </PageLayout>
         ),
       },
       {
-        path: "themes/:themeId/questions/:qId",
+        path: "documents/:documentId",
         element: (
           <PageLayout>
-            <QuestionDetail />
+            <DocumentDetail />
           </PageLayout>
         ),
       },
       {
-        path: "themes/:themeId/questions/:qId/comments",
+        path: "documents/:documentId/edit",
         element: (
           <PageLayout>
-            <CommentsPage />
+            <SimpleDocumentEditor />
           </PageLayout>
         ),
       },
       {
-        path: "mypage",
+        path: "documents/new",
         element: (
           <PageLayout>
-            <MyPage />
+            <SimpleDocumentEditor />
+          </PageLayout>
+        ),
+      },
+      {
+        path: "knowledge-graph",
+        element: (
+          <PageLayout>
+            <SimpleKnowledgeGraph />
+          </PageLayout>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <PageLayout>
+            <SimpleMyPage />
           </PageLayout>
         ),
       },

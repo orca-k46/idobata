@@ -1,17 +1,15 @@
 {
-  "name": "idobata",
+  "name": "kaze-no-tani-docs",
   "version": "1.0.0",
-  "author": "",
-  "license": "ISC",
+  "author": "Kaze no Tani Project Team",
+  "license": "MIT",
+  "description": "Next-generation document management system for Kaze no Tani project",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "knip": "^5.53.0"
   },
   "workspaces": [
-    "policy-edit/backend",
-    "policy-edit/frontend",
-    "policy-edit/mcp",
-    "idea-discussion/backend",
+    "backend",
     "frontend",
     "admin"
   ],
