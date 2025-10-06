@@ -105,7 +105,7 @@ const DocumentDetail: React.FC = () => {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-bold text-cyan-800"
+                  <h1 className="text-3xl font-bold text-cyan-800">
                     {document.title}
                   </h1>
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
