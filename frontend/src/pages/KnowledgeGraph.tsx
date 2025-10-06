@@ -405,18 +405,18 @@ const KnowledgeGraph: React.FC = () => {
   ];
 
   return (
-    <div className={`${isFullscreen ? 'fixed inset-0 z-50' : 'min-h-screen'} bg-gray-50 dark:bg-gray-900`}>
+    <div className={`${isFullscreen ? 'fixed inset-0 z-50' : 'min-h-screen'} bg-gradient-to-br from-blue-50 to-cyan-50`}>
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-white shadow-sm border-b border-cyan-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                <h1 className="text-3xl font-bold text-slate-800 flex items-center">
                   <Network className="h-8 w-8 mr-3" />
                   ナレッジグラフ
                 </h1>
-                <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center space-x-2 text-sm text-slate-600">
                   <span>{graphData.nodes.length} ノード</span>
                   <span>•</span>
                   <span>{graphData.links.length} リンク</span>
@@ -427,10 +427,10 @@ const KnowledgeGraph: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium ${
+                  className={`inline-flex items-center px-3 py-2 border border-cyan-300 rounded-md shadow-sm text-sm font-medium ${
                     showFilters
-                      ? 'bg-indigo-50 text-indigo-700 border-indigo-300 dark:bg-indigo-900 dark:text-indigo-200'
-                      : 'bg-white text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                      ? 'bg-cyan-50 text-cyan-700 border-cyan-300'
+                      : 'bg-white text-slate-700'
                   }`}
                 >
                   <Filter className="h-4 w-4 mr-2" />
@@ -438,7 +438,7 @@ const KnowledgeGraph: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setIsFullscreen(!isFullscreen)}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700"
+                  className="inline-flex items-center px-3 py-2 border border-cyan-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white"
                 >
                   <Maximize className="h-4 w-4" />
                 </button>
@@ -451,12 +451,12 @@ const KnowledgeGraph: React.FC = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600"
+                className="mt-4 p-4 bg-cyan-50 rounded-lg border border-cyan-200"
               >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Search */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
                       <Search className="h-4 w-4 inline mr-1" />
                       検索
                     </label>
@@ -465,20 +465,20 @@ const KnowledgeGraph: React.FC = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="文書タイトルで検索..."
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                      className="w-full px-3 py-2 border border-cyan-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 bg-white text-slate-800"
                     />
                   </div>
 
                   {/* Team Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
                       <Users className="h-4 w-4 inline mr-1" />
                       チーム
                     </label>
                     <select
                       value={selectedTeam}
                       onChange={(e) => setSelectedTeam(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                      className="w-full px-3 py-2 border border-cyan-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 bg-white text-slate-800"
                     >
                       <option value="">すべてのチーム</option>
                       {teams?.map((team: any) => (
@@ -491,14 +491,14 @@ const KnowledgeGraph: React.FC = () => {
 
                   {/* Category Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
                       <FileText className="h-4 w-4 inline mr-1" />
                       カテゴリ
                     </label>
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                      className="w-full px-3 py-2 border border-cyan-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 bg-white text-slate-800"
                     >
                       <option value="">すべてのカテゴリ</option>
                       {categories.map((category) => (
@@ -522,19 +522,19 @@ const KnowledgeGraph: React.FC = () => {
           <div className="absolute top-4 right-4 z-10 flex flex-col space-y-2">
             <button
               onClick={handleZoomIn}
-              className="p-2 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="p-2 bg-white rounded-md shadow-lg border border-cyan-200 hover:bg-cyan-50"
             >
               <ZoomIn className="h-4 w-4" />
             </button>
             <button
               onClick={handleZoomOut}
-              className="p-2 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="p-2 bg-white rounded-md shadow-lg border border-cyan-200 hover:bg-cyan-50"
             >
               <ZoomOut className="h-4 w-4" />
             </button>
             <button
               onClick={handleReset}
-              className="p-2 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="p-2 bg-white rounded-md shadow-lg border border-cyan-200 hover:bg-cyan-50"
             >
               <RotateCcw className="h-4 w-4" />
             </button>
@@ -543,38 +543,38 @@ const KnowledgeGraph: React.FC = () => {
           {/* SVG Graph */}
           <svg
             ref={svgRef}
-            className="w-full h-full bg-white dark:bg-gray-800"
+            className="w-full h-full bg-white"
             style={{ cursor: 'grab' }}
           />
 
           {/* Legend */}
-          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4">
-            <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">凡例</h4>
+          <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg border border-cyan-200 p-4">
+            <h4 className="text-sm font-medium text-slate-800 mb-2">凡例</h4>
             <div className="space-y-2 text-xs">
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
-                <span className="text-gray-700 dark:text-gray-300">承認済み文書</span>
+                <span className="text-slate-700">承認済み文書</span>
               </div>
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-yellow-500 mr-2"></div>
-                <span className="text-gray-700 dark:text-gray-300">レビュー中文書</span>
+                <span className="text-slate-700">レビュー中文書</span>
               </div>
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-gray-500 mr-2"></div>
-                <span className="text-gray-700 dark:text-gray-300">下書き文書</span>
+                <span className="text-slate-700">下書き文書</span>
               </div>
-              <div className="space-y-1 mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+              <div className="space-y-1 mt-3 pt-2 border-t border-cyan-200">
                 <div className="flex items-center">
                   <div className="w-4 h-1 bg-green-500 mr-2"></div>
-                  <span className="text-gray-700 dark:text-gray-300">参照関係</span>
+                  <span className="text-slate-700">参照関係</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-4 h-1 bg-yellow-500 mr-2"></div>
-                  <span className="text-gray-700 dark:text-gray-300">類似関係</span>
+                  <span className="text-slate-700">類似関係</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-4 h-1 bg-gray-500 mr-2"></div>
-                  <span className="text-gray-700 dark:text-gray-300">関連</span>
+                  <span className="text-slate-700">関連</span>
                 </div>
               </div>
             </div>
@@ -587,16 +587,16 @@ const KnowledgeGraph: React.FC = () => {
             initial={{ opacity: 0, x: 300 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 300 }}
-            className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-6 overflow-y-auto"
+            className="w-80 bg-white border-l border-cyan-200 p-6 overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+              <h3 className="text-lg font-semibold text-slate-800 flex items-center">
                 <Info className="h-5 w-5 mr-2" />
                 詳細情報
               </h3>
               <button
                 onClick={() => setSelectedNode(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="text-slate-400 hover:text-slate-600"
               >
                 ×
               </button>
@@ -604,19 +604,19 @@ const KnowledgeGraph: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">タイトル</span>
-                <p className="text-gray-900 dark:text-white">{selectedNode.title}</p>
+                <span className="text-sm font-medium text-slate-500">タイトル</span>
+                <p className="text-slate-800">{selectedNode.title}</p>
               </div>
 
               <div>
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">タイプ</span>
-                <p className="text-gray-900 dark:text-white">文書</p>
+                <span className="text-sm font-medium text-slate-500">タイプ</span>
+                <p className="text-slate-800">文書</p>
               </div>
 
               {selectedNode.status && (
                 <div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">ステータス</span>
-                  <p className="text-gray-900 dark:text-white">
+                  <span className="text-sm font-medium text-slate-500">ステータス</span>
+                  <p className="text-slate-800">
                     {selectedNode.status === 'approved' ? '承認済み' :
                      selectedNode.status === 'review' ? 'レビュー中' : '下書き'}
                   </p>
@@ -625,8 +625,8 @@ const KnowledgeGraph: React.FC = () => {
 
               {selectedNode.category && (
                 <div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">カテゴリ</span>
-                  <p className="text-gray-900 dark:text-white">
+                  <span className="text-sm font-medium text-slate-500">カテゴリ</span>
+                  <p className="text-slate-800">
                     {categories.find(c => c.value === selectedNode.category)?.label || selectedNode.category}
                   </p>
                 </div>
@@ -634,7 +634,7 @@ const KnowledgeGraph: React.FC = () => {
 
               {selectedNode.tags && selectedNode.tags.length > 0 && (
                 <div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">タグ</span>
+                  <span className="text-sm font-medium text-slate-500">タグ</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {selectedNode.tags.map((tag) => (
                       <span
