@@ -148,7 +148,7 @@ const DocumentDetail: React.FC = () => {
                   >
                     {document.teamId.icon}
                   </div>
-                  <span className="text-sm text-cyan-600"
+                  <span className="text-sm text-cyan-600">
                     {document.teamId.name}
                   </span>
                 </div>
