@@ -48,15 +48,138 @@ const KnowledgeGraph: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
 
-  // Fetch documents and teams
-  const { data: documents } = useQuery({
+  // Sample data for knowledge graph demonstration
+  const mockDocuments = [
+    {
+      _id: '1',
+      title: '風の谷プロジェクト全体構想書',
+      status: 'approved',
+      category: 'specification',
+      tags: ['構想', '全体', '基本方針'],
+      teamId: { _id: 'team1', name: '文化・全体デザイン' },
+      relatedDocuments: [
+        { documentId: '2', relationType: 'reference', strength: 0.9 },
+        { documentId: '3', relationType: 'reference', strength: 0.8 },
+        { documentId: '4', relationType: 'similar', strength: 0.7 }
+      ]
+    },
+    {
+      _id: '2',
+      title: '持続可能エネルギーシステム設計書',
+      status: 'approved',
+      category: 'specification',
+      tags: ['エネルギー', '設計', '持続可能'],
+      teamId: { _id: 'team2', name: 'エネルギー' },
+      relatedDocuments: [
+        { documentId: '1', relationType: 'reference', strength: 0.9 },
+        { documentId: '5', relationType: 'reference', strength: 0.8 },
+        { documentId: '7', relationType: 'similar', strength: 0.6 }
+      ]
+    },
+    {
+      _id: '3',
+      title: '自然共生型建築ガイドライン',
+      status: 'approved',
+      category: 'guideline',
+      tags: ['建築', '自然', 'ガイドライン'],
+      teamId: { _id: 'team3', name: '空間デザイン' },
+      relatedDocuments: [
+        { documentId: '1', relationType: 'reference', strength: 0.8 },
+        { documentId: '4', relationType: 'similar', strength: 0.9 },
+        { documentId: '6', relationType: 'related', strength: 0.5 }
+      ]
+    },
+    {
+      _id: '4',
+      title: '森林保全・水循環計画書',
+      status: 'review',
+      category: 'plan',
+      tags: ['森林', '水', 'トレイル', '保全'],
+      teamId: { _id: 'team4', name: '森と水とトレイル' },
+      relatedDocuments: [
+        { documentId: '1', relationType: 'similar', strength: 0.7 },
+        { documentId: '3', relationType: 'similar', strength: 0.9 },
+        { documentId: '8', relationType: 'reference', strength: 0.6 }
+      ]
+    },
+    {
+      _id: '5',
+      title: 'コミュニティ教育プログラム案',
+      status: 'draft',
+      category: 'program',
+      tags: ['教育', 'コミュニティ', 'プログラム'],
+      teamId: { _id: 'team5', name: '谷をつくる人をつくる（教育）' },
+      relatedDocuments: [
+        { documentId: '2', relationType: 'reference', strength: 0.8 },
+        { documentId: '6', relationType: 'similar', strength: 0.7 },
+        { documentId: '9', relationType: 'related', strength: 0.5 }
+      ]
+    },
+    {
+      _id: '6',
+      title: 'IT基盤・各班連携フレームワーク',
+      status: 'approved',
+      category: 'framework',
+      tags: ['IT', '連携', 'インフラ', 'フレームワーク'],
+      teamId: { _id: 'team6', name: 'テクノロジー' },
+      relatedDocuments: [
+        { documentId: '3', relationType: 'related', strength: 0.5 },
+        { documentId: '5', relationType: 'similar', strength: 0.7 },
+        { documentId: '7', relationType: 'reference', strength: 0.8 }
+      ]
+    },
+    {
+      _id: '7',
+      title: '生活オフィス空間設計指針',
+      status: 'review',
+      category: 'guideline',
+      tags: ['オフィス', '生活空間', '設計'],
+      teamId: { _id: 'team7', name: '生活オフィス空間（サンゴ礁1）' },
+      relatedDocuments: [
+        { documentId: '2', relationType: 'similar', strength: 0.6 },
+        { documentId: '6', relationType: 'reference', strength: 0.8 },
+        { documentId: '8', relationType: 'related', strength: 0.4 }
+      ]
+    },
+    {
+      _id: '8',
+      title: '商業空間・コミュニティ統合プラン',
+      status: 'draft',
+      category: 'plan',
+      tags: ['商業', 'コミュニティ', '統合'],
+      teamId: { _id: 'team8', name: 'まち商業空間（サンゴ礁2）' },
+      relatedDocuments: [
+        { documentId: '4', relationType: 'reference', strength: 0.6 },
+        { documentId: '7', relationType: 'related', strength: 0.4 },
+        { documentId: '9', relationType: 'similar', strength: 0.7 }
+      ]
+    },
+    {
+      _id: '9',
+      title: '持続可能農業・食料システム基本方針',
+      status: 'approved',
+      category: 'policy',
+      tags: ['農業', '食料', '持続可能', '基本方針'],
+      teamId: { _id: 'team9', name: '食と農' },
+      relatedDocuments: [
+        { documentId: '5', relationType: 'related', strength: 0.5 },
+        { documentId: '8', relationType: 'similar', strength: 0.7 },
+        { documentId: '1', relationType: 'reference', strength: 0.6 }
+      ]
+    }
+  ];
+
+  // Use mock data for demonstration, fallback to API data when available
+  const { data: documents = mockDocuments } = useQuery({
     queryKey: ['documents'],
     queryFn: () => documentApi.getAll(),
+    enabled: false, // Disable API call for now to use mock data
   });
 
   const { data: teams } = useQuery({
     queryKey: ['teams'],
     queryFn: teamApi.getAll,
+    enabled: false, // Disable API call for now
   });
 
   // Process data into nodes and links
