@@ -95,7 +95,7 @@ const DocumentDetail: React.FC = () => {
             <div className="flex items-center mb-4">
               <Link
                 to="/documents/search"
-                className="flex items-center text-slate-600 hover:text-slate-800 mr-4"
+                className="flex items-center text-cyan-600 hover:text-cyan-800 mr-4"
               >
                 <ChevronLeft className="h-5 w-5 mr-1" />
                 文書一覧に戻る
@@ -105,7 +105,7 @@ const DocumentDetail: React.FC = () => {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-bold text-slate-800">
+                  <h1 className="text-3xl font-bold text-cyan-800"
                     {document.title}
                   </h1>
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
@@ -122,7 +122,7 @@ const DocumentDetail: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center space-x-6 text-sm text-slate-600 mb-4">
+                <div className="flex items-center space-x-6 text-sm text-cyan-600 mb-4">
                   <div className="flex items-center">
                     <User className="h-4 w-4 mr-1" />
                     {document.authorName}
@@ -148,7 +148,7 @@ const DocumentDetail: React.FC = () => {
                   >
                     {document.teamId.icon}
                   </div>
-                  <span className="text-sm text-slate-600">
+                  <span className="text-sm text-cyan-600"
                     {document.teamId.name}
                   </span>
                 </div>
@@ -157,16 +157,16 @@ const DocumentDetail: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <Link
                   to={`/documents/${document._id}/edit`}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700"
                 >
                   <Edit className="h-4 w-4 mr-2" />
                   編集
                 </Link>
-                <button className="inline-flex items-center px-4 py-2 border border-cyan-300 dark:border-cyan-600 rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 hover:bg-cyan-50 dark:hover:bg-slate-600">
+                <button className="inline-flex items-center px-4 py-2 border border-cyan-300 rounded-md shadow-sm text-sm font-medium text-cyan-700 bg-white hover:bg-cyan-50">
                   <Share2 className="h-4 w-4 mr-2" />
                   共有
                 </button>
-                <button className="inline-flex items-center p-2 border border-cyan-300 dark:border-cyan-600 rounded-md shadow-sm text-slate-400 bg-white dark:bg-slate-700 hover:bg-cyan-50 dark:hover:bg-slate-600">
+                <button className="inline-flex items-center p-2 border border-cyan-300 rounded-md shadow-sm text-cyan-400 bg-white hover:bg-cyan-50">
                   <MoreVertical className="h-4 w-4" />
                 </button>
               </div>
@@ -182,20 +182,20 @@ const DocumentDetail: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-cyan-200 dark:border-slate-700"
+              className="bg-white rounded-xl shadow-lg border border-cyan-200"
             >
               <div className="p-8">
                 <div className="prose prose-lg dark:prose-invert max-w-none">
                   {document.content.split('\n').map((line, index) => {
                     if (line.startsWith('# ')) {
                       return (
-                        <h1 key={index} className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                        <h1 key={index} className="text-3xl font-bold text-cyan-900 mb-4">
                           {line.substring(2)}
                         </h1>
                       );
                     } else if (line.startsWith('## ')) {
                       return (
-                        <h2 key={index} className="text-2xl font-semibold text-slate-900 dark:text-white mt-8 mb-4">
+                        <h2 key={index} className="text-2xl font-semibold text-cyan-900 mt-8 mb-4">
                           {line.substring(3)}
                         </h2>
                       );
@@ -204,19 +204,19 @@ const DocumentDetail: React.FC = () => {
                       if (parts) {
                         return (
                           <li key={index} className="mb-2">
-                            <strong className="text-slate-900 dark:text-white">{parts[1]}</strong>: {parts[2]}
+                            <strong className="text-cyan-900">{parts[1]}</strong>: {parts[2]}
                           </li>
                         );
                       }
                     } else if (line.startsWith('- ')) {
                       return (
-                        <li key={index} className="mb-1 text-slate-700 dark:text-slate-300">
+                        <li key={index} className="mb-1 text-cyan-700">
                           {line.substring(2)}
                         </li>
                       );
                     } else if (line.match(/^\d+\. /)) {
                       return (
-                        <li key={index} className="mb-1 text-slate-700 dark:text-slate-300">
+                        <li key={index} className="mb-1 text-cyan-700">
                           {line.replace(/^\d+\. /, '')}
                         </li>
                       );
@@ -224,7 +224,7 @@ const DocumentDetail: React.FC = () => {
                       return <br key={index} />;
                     } else {
                       return (
-                        <p key={index} className="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed">
+                        <p key={index} className="mb-4 text-cyan-700 leading-relaxed">
                           {line}
                         </p>
                       );
@@ -242,9 +242,9 @@ const DocumentDetail: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-cyan-200 dark:border-slate-700 p-6"
+              className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+              <h3 className="text-lg font-semibold text-cyan-900 mb-4 flex items-center">
                 <Tag className="h-5 w-5 mr-2" />
                 タグ
               </h3>
@@ -252,7 +252,7 @@ const DocumentDetail: React.FC = () => {
                 {document.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-block px-3 py-1 text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-full"
+                    className="inline-block px-3 py-1 text-sm bg-cyan-100 text-cyan-800 rounded-full"
                   >
                     #{tag}
                   </span>
@@ -265,25 +265,25 @@ const DocumentDetail: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-cyan-200 dark:border-slate-700 p-6"
+              className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <h3 className="text-lg font-semibold text-cyan-900 mb-4">
                 文書情報
               </h3>
               <div className="space-y-3 text-sm">
                 <div>
-                  <span className="text-slate-600 dark:text-slate-400">カテゴリ:</span>
-                  <span className="ml-2 text-slate-900 dark:text-white">仕様書</span>
+                  <span className="text-cyan-600">カテゴリ:</span>
+                  <span className="ml-2 text-cyan-900">仕様書</span>
                 </div>
                 <div>
-                  <span className="text-slate-600 dark:text-slate-400">作成日:</span>
-                  <span className="ml-2 text-slate-900 dark:text-white">
+                  <span className="text-cyan-600">作成日:</span>
+                  <span className="ml-2 text-cyan-900">
                     {new Date(document.createdAt).toLocaleDateString('ja-JP')}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-600 dark:text-slate-400">編集回数:</span>
-                  <span className="ml-2 text-slate-900 dark:text-white">
+                  <span className="text-cyan-600">編集回数:</span>
+                  <span className="ml-2 text-cyan-900">
                     {document.statistics.editCount} 回
                   </span>
                 </div>
@@ -295,9 +295,9 @@ const DocumentDetail: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-cyan-200 dark:border-slate-700 p-6"
+              className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center">
+              <h3 className="text-lg font-semibold text-cyan-900 mb-4 flex items-center">
                 <GitBranch className="h-5 w-5 mr-2" />
                 関連文書
               </h3>
@@ -306,15 +306,15 @@ const DocumentDetail: React.FC = () => {
                   <Link
                     key={relDoc._id}
                     to={`/documents/${relDoc._id}`}
-                    className="block p-3 border border-cyan-200 dark:border-slate-600 rounded-lg hover:border-indigo-500 hover:shadow-sm transition-colors"
+                    className="block p-3 border border-cyan-200 rounded-lg hover:border-cyan-500 hover:shadow-sm transition-colors"
                   >
                     <div className="flex items-center">
-                      <FileText className="h-4 w-4 text-slate-400 mr-2" />
-                      <span className="text-sm text-slate-900 dark:text-white">
+                      <FileText className="h-4 w-4 text-cyan-400 mr-2" />
+                      <span className="text-sm text-cyan-900">
                         {relDoc.title}
                       </span>
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="text-xs text-cyan-500 mt-1">
                       {relDoc.relationType === 'reference' ? '参照' : '類似'}
                     </div>
                   </Link>
@@ -327,14 +327,14 @@ const DocumentDetail: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-cyan-200 dark:border-slate-700 p-6"
+              className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6"
             >
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              <h3 className="text-lg font-semibold text-cyan-900 mb-4">
                 バージョン履歴
               </h3>
               <div className="text-center py-4">
-                <GitBranch className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <GitBranch className="h-8 w-8 text-cyan-300 mx-auto mb-2" />
+                <p className="text-sm text-cyan-500">
                   バージョン履歴はまだ実装されていません
                 </p>
               </div>
