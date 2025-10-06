@@ -20,7 +20,7 @@ import { documentApi, teamApi } from '../services/api';
 interface Node {
   id: string;
   title: string;
-  type: 'document' | 'team';
+  type: 'document';
   teamId?: string;
   status?: string;
   category?: string;
@@ -61,24 +61,12 @@ const KnowledgeGraph: React.FC = () => {
 
   // Process data into nodes and links
   const graphData = React.useMemo(() => {
-    if (!documents || !teams) return { nodes: [], links: [] };
+    if (!documents) return { nodes: [], links: [] };
 
     const nodes: Node[] = [];
     const links: Link[] = [];
 
-    // Add team nodes
-    teams.forEach((team: any) => {
-      if (!selectedTeam || team._id === selectedTeam) {
-        nodes.push({
-          id: team._id,
-          title: team.name,
-          type: 'team',
-          teamId: team._id,
-        });
-      }
-    });
-
-    // Add document nodes and links
+    // Add document nodes only
     documents.forEach((doc: any) => {
       if (selectedTeam && doc.teamId?._id !== selectedTeam) return;
       if (selectedCategory && doc.category !== selectedCategory) return;
@@ -93,21 +81,14 @@ const KnowledgeGraph: React.FC = () => {
         category: doc.category,
         tags: doc.tags,
       });
+    });
 
-      // Link to team
-      if (doc.teamId) {
-        const teamExists = nodes.find(n => n.id === doc.teamId._id);
-        if (teamExists) {
-          links.push({
-            source: doc._id,
-            target: doc.teamId._id,
-            strength: 0.8,
-            type: 'team_membership',
-          });
-        }
-      }
+    // Links between related documents only
+    documents.forEach((doc: any) => {
+      if (selectedTeam && doc.teamId?._id !== selectedTeam) return;
+      if (selectedCategory && doc.category !== selectedCategory) return;
+      if (searchQuery && !doc.title.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-      // Links to related documents
       if (doc.relatedDocuments) {
         doc.relatedDocuments.forEach((rel: any) => {
           const targetExists = nodes.find(n => n.id === rel.documentId);
@@ -124,7 +105,7 @@ const KnowledgeGraph: React.FC = () => {
     });
 
     return { nodes, links };
-  }, [documents, teams, selectedTeam, selectedCategory, searchQuery]);
+  }, [documents, selectedTeam, selectedCategory, searchQuery]);
 
   // D3 force simulation
   useEffect(() => {
@@ -167,7 +148,6 @@ const KnowledgeGraph: React.FC = () => {
       .enter().append('line')
       .attr('stroke', d => {
         switch (d.type) {
-          case 'team_membership': return '#6366f1';
           case 'reference': return '#10b981';
           case 'similar': return '#f59e0b';
           default: return '#9ca3af';
@@ -191,18 +171,13 @@ const KnowledgeGraph: React.FC = () => {
 
     // Add circles for nodes
     nodeGroup.append('circle')
-      .attr('r', d => d.type === 'team' ? 20 : 15)
+      .attr('r', 15)
       .attr('fill', d => {
-        if (d.type === 'team') {
-          const team = teams?.find((t: any) => t._id === d.id);
-          return team?.color || '#6366f1';
-        } else {
-          switch (d.status) {
-            case 'approved': return '#10b981';
-            case 'review': return '#f59e0b';
-            case 'draft': return '#9ca3af';
-            default: return '#6b7280';
-          }
+        switch (d.status) {
+          case 'approved': return '#10b981';
+          case 'review': return '#f59e0b';
+          case 'draft': return '#9ca3af';
+          default: return '#6b7280';
         }
       })
       .attr('stroke', '#fff')
@@ -211,25 +186,19 @@ const KnowledgeGraph: React.FC = () => {
         setSelectedNode(d);
       })
       .on('mouseover', function(event, d) {
-        d3.select(this).attr('r', d.type === 'team' ? 25 : 20);
+        d3.select(this).attr('r', 20);
       })
       .on('mouseout', function(event, d) {
-        d3.select(this).attr('r', d.type === 'team' ? 20 : 15);
+        d3.select(this).attr('r', 15);
       });
 
     // Add icons
     nodeGroup.append('text')
       .attr('text-anchor', 'middle')
       .attr('dy', '0.35em')
-      .attr('font-size', d => d.type === 'team' ? '16px' : '12px')
+      .attr('font-size', '12px')
       .attr('fill', 'white')
-      .text(d => {
-        if (d.type === 'team') {
-          const team = teams?.find((t: any) => t._id === d.id);
-          return team?.icon || '👥';
-        }
-        return '📄';
-      })
+      .text('📄')
       .style('pointer-events', 'none');
 
     // Add labels
@@ -460,10 +429,6 @@ const KnowledgeGraph: React.FC = () => {
             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">凡例</h4>
             <div className="space-y-2 text-xs">
               <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-blue-500 mr-2"></div>
-                <span className="text-gray-700 dark:text-gray-300">チーム</span>
-              </div>
-              <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
                 <span className="text-gray-700 dark:text-gray-300">承認済み文書</span>
               </div>
@@ -474,6 +439,20 @@ const KnowledgeGraph: React.FC = () => {
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-gray-500 mr-2"></div>
                 <span className="text-gray-700 dark:text-gray-300">下書き文書</span>
+              </div>
+              <div className="space-y-1 mt-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+                <div className="flex items-center">
+                  <div className="w-4 h-1 bg-green-500 mr-2"></div>
+                  <span className="text-gray-700 dark:text-gray-300">参照関係</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-1 bg-yellow-500 mr-2"></div>
+                  <span className="text-gray-700 dark:text-gray-300">類似関係</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-1 bg-gray-500 mr-2"></div>
+                  <span className="text-gray-700 dark:text-gray-300">関連</span>
+                </div>
               </div>
             </div>
           </div>
@@ -508,48 +487,42 @@ const KnowledgeGraph: React.FC = () => {
 
               <div>
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">タイプ</span>
-                <p className="text-gray-900 dark:text-white">
-                  {selectedNode.type === 'team' ? 'チーム' : '文書'}
-                </p>
+                <p className="text-gray-900 dark:text-white">文書</p>
               </div>
 
-              {selectedNode.type === 'document' && (
-                <>
-                  {selectedNode.status && (
-                    <div>
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">ステータス</span>
-                      <p className="text-gray-900 dark:text-white">
-                        {selectedNode.status === 'approved' ? '承認済み' :
-                         selectedNode.status === 'review' ? 'レビュー中' : '下書き'}
-                      </p>
-                    </div>
-                  )}
+              {selectedNode.status && (
+                <div>
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">ステータス</span>
+                  <p className="text-gray-900 dark:text-white">
+                    {selectedNode.status === 'approved' ? '承認済み' :
+                     selectedNode.status === 'review' ? 'レビュー中' : '下書き'}
+                  </p>
+                </div>
+              )}
 
-                  {selectedNode.category && (
-                    <div>
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">カテゴリ</span>
-                      <p className="text-gray-900 dark:text-white">
-                        {categories.find(c => c.value === selectedNode.category)?.label || selectedNode.category}
-                      </p>
-                    </div>
-                  )}
+              {selectedNode.category && (
+                <div>
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">カテゴリ</span>
+                  <p className="text-gray-900 dark:text-white">
+                    {categories.find(c => c.value === selectedNode.category)?.label || selectedNode.category}
+                  </p>
+                </div>
+              )}
 
-                  {selectedNode.tags && selectedNode.tags.length > 0 && (
-                    <div>
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">タグ</span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {selectedNode.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="inline-block px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded"
-                          >
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
+              {selectedNode.tags && selectedNode.tags.length > 0 && (
+                <div>
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">タグ</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {selectedNode.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-block px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           </motion.div>
