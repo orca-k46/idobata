@@ -458,10 +458,6 @@ export const SimpleTeamDetail: React.FC = () => {
 
   const mockChatMessages = [
     { id: '1', user: '田中 太郎', content: '新しいAPI設計について話し合いましょう', timestamp: '10:30', avatar: 'T' },
-    { id: '2', user: '佐藤 花子', content: 'RESTful設計でいきますか？GraphQLも検討したいです', timestamp: '10:32', avatar: 'S' },
-    { id: '3', user: '鈴木 次郎', content: 'フロントエンド側ではGraphQLの方が使いやすそうですね', timestamp: '10:35', avatar: 'S' },
-    { id: '4', user: '田中 太郎', content: 'では来週のミーティングで詳細を決めましょう 📅', timestamp: '10:40', avatar: 'T' },
-    { id: '5', user: '高橋 健一', content: 'データベース設計書も更新が必要ですね', timestamp: '11:15', avatar: 'T' },
   ];
 
   const mockDocuments = [
