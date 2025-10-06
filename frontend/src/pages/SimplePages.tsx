@@ -24,6 +24,18 @@ import {
   Edit,
   MessageCircle,
   Activity,
+  Send,
+  PlusCircle,
+  Share2,
+  Save,
+  UserPlus,
+  Bell,
+  Hash,
+  Smile,
+  Paperclip,
+  MoreVertical,
+  Star,
+  Pin,
 } from 'lucide-react';
 
 export const SimpleDashboard: React.FC = () => {
@@ -415,12 +427,508 @@ export const SimpleTeams: React.FC = () => {
   );
 };
 
-export const SimpleTeamDetail: React.FC = () => (
-  <div className="p-8">
-    <h1 className="text-3xl font-bold mb-4">チーム詳細</h1>
-    <p>チーム詳細ページです。</p>
-  </div>
-);
+export const SimpleTeamDetail: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [chatMessage, setChatMessage] = useState('');
+  const [documentTitle, setDocumentTitle] = useState('');
+  const [documentContent, setDocumentContent] = useState('');
+  const [isCreatingDocument, setIsCreatingDocument] = useState(false);
+
+  // Mock team data
+  const mockTeam = {
+    _id: '1',
+    name: 'テクノロジー（情報インフラ＆他領域との協働）',
+    description: 'IT基盤の構築と各領域との技術連携を担当するチームです。システム設計、データベース管理、API開発、セキュリティ対策を行います。',
+    color: '#6366f1',
+    icon: '💻',
+    memberCount: 8,
+    documentCount: 42,
+    createdAt: '2024-01-15T10:00:00Z',
+    members: [
+      { id: '1', name: '田中 太郎', role: 'チームリーダー', avatar: 'T', status: 'online', lastSeen: '現在' },
+      { id: '2', name: '佐藤 花子', role: 'バックエンド開発', avatar: 'S', status: 'online', lastSeen: '現在' },
+      { id: '3', name: '鈴木 次郎', role: 'フロントエンド開発', avatar: 'S', status: 'away', lastSeen: '5分前' },
+      { id: '4', name: '山田 美咲', role: 'DevOps', avatar: 'Y', status: 'offline', lastSeen: '1時間前' },
+      { id: '5', name: '高橋 健一', role: 'データベース管理', avatar: 'T', status: 'online', lastSeen: '現在' },
+      { id: '6', name: '渡辺 麻衣', role: 'セキュリティ', avatar: 'W', status: 'away', lastSeen: '10分前' },
+      { id: '7', name: '伊藤 大輔', role: 'システム設計', avatar: 'I', status: 'online', lastSeen: '現在' },
+      { id: '8', name: '松本 優子', role: 'API開発', avatar: 'M', status: 'offline', lastSeen: '30分前' },
+    ]
+  };
+
+  const mockChatMessages = [
+    { id: '1', user: '田中 太郎', content: '新しいAPI設計について話し合いましょう', timestamp: '10:30', avatar: 'T' },
+    { id: '2', user: '佐藤 花子', content: 'RESTful設計でいきますか？GraphQLも検討したいです', timestamp: '10:32', avatar: 'S' },
+    { id: '3', user: '鈴木 次郎', content: 'フロントエンド側ではGraphQLの方が使いやすそうですね', timestamp: '10:35', avatar: 'S' },
+    { id: '4', user: '田中 太郎', content: 'では来週のミーティングで詳細を決めましょう 📅', timestamp: '10:40', avatar: 'T' },
+    { id: '5', user: '高橋 健一', content: 'データベース設計書も更新が必要ですね', timestamp: '11:15', avatar: 'T' },
+  ];
+
+  const mockDocuments = [
+    {
+      id: '1',
+      title: 'システム設計書 v2.1',
+      status: 'approved',
+      lastEditor: '田中 太郎',
+      lastEdited: '2時間前',
+      collaborators: ['田中 太郎', '伊藤 大輔', '佐藤 花子']
+    },
+    {
+      id: '2',
+      title: 'API仕様書',
+      status: 'editing',
+      lastEditor: '佐藤 花子',
+      lastEdited: '15分前',
+      collaborators: ['佐藤 花子', '松本 優子', '鈴木 次郎']
+    },
+    {
+      id: '3',
+      title: 'データベース設計',
+      status: 'review',
+      lastEditor: '高橋 健一',
+      lastEdited: '1時間前',
+      collaborators: ['高橋 健一', '田中 太郎']
+    },
+    {
+      id: '4',
+      title: 'セキュリティガイドライン',
+      status: 'approved',
+      lastEditor: '渡辺 麻衣',
+      lastEdited: '3時間前',
+      collaborators: ['渡辺 麻衣', '田中 太郎', '伊藤 大輔']
+    },
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'online': return 'bg-green-500';
+      case 'away': return 'bg-yellow-500';
+      case 'offline': return 'bg-gray-400';
+      default: return 'bg-gray-400';
+    }
+  };
+
+  const getDocumentStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved': return 'bg-green-100 text-green-800';
+      case 'editing': return 'bg-blue-100 text-blue-800';
+      case 'review': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getDocumentStatusText = (status: string) => {
+    switch (status) {
+      case 'approved': return '承認済み';
+      case 'editing': return '編集中';
+      case 'review': return 'レビュー中';
+      default: return '不明';
+    }
+  };
+
+  const sendMessage = () => {
+    if (chatMessage.trim()) {
+      // ここで実際のメッセージ送信処理
+      console.log('Sending message:', chatMessage);
+      setChatMessage('');
+    }
+  };
+
+  const createDocument = () => {
+    if (documentTitle.trim()) {
+      // ここで実際の文書作成処理
+      console.log('Creating document:', documentTitle);
+      setDocumentTitle('');
+      setDocumentContent('');
+      setIsCreatingDocument(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-cyan-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div
+                  className="w-16 h-16 rounded-lg flex items-center justify-center text-white text-2xl"
+                  style={{ backgroundColor: mockTeam.color }}
+                >
+                  {mockTeam.icon}
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-800">{mockTeam.name}</h1>
+                  <p className="text-slate-600 mt-1">{mockTeam.memberCount} メンバー • {mockTeam.documentCount} 文書</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button className="inline-flex items-center px-4 py-2 border border-cyan-300 rounded-md shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-cyan-50">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  メンバー招待
+                </button>
+                <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                  <Settings className="h-4 w-4 mr-2" />
+                  設定
+                </button>
+              </div>
+            </div>
+
+            {/* Team Description */}
+            <div className="mt-4 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+              <p className="text-slate-700">{mockTeam.description}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="bg-white border-b border-cyan-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8">
+            {[
+              { id: 'overview', label: '概要', icon: Users },
+              { id: 'chat', label: 'チャット', icon: MessageCircle },
+              { id: 'documents', label: '文書', icon: FileText },
+              { id: 'members', label: 'メンバー', icon: Users },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center px-1 py-4 border-b-2 font-medium text-sm ${
+                    activeTab === tab.id
+                      ? 'border-indigo-500 text-indigo-600'
+                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                  }`}
+                >
+                  <Icon className="h-4 w-4 mr-2" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeTab === 'overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Recent Activity */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">最近の活動</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">S</div>
+                    <div>
+                      <p className="text-sm text-slate-800"><strong>佐藤 花子</strong> が API仕様書を更新しました</p>
+                      <p className="text-xs text-slate-500">15分前</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">T</div>
+                    <div>
+                      <p className="text-sm text-slate-800"><strong>田中 太郎</strong> がチャットでメッセージを送信しました</p>
+                      <p className="text-xs text-slate-500">30分前</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">T</div>
+                    <div>
+                      <p className="text-sm text-slate-800"><strong>高橋 健一</strong> がデータベース設計をレビュー待ちにしました</p>
+                      <p className="text-xs text-slate-500">1時間前</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Team Stats */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">チーム統計</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600">アクティブな文書</span>
+                    <span className="font-semibold text-slate-800">12</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600">今週の更新</span>
+                    <span className="font-semibold text-slate-800">24</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600">未読メッセージ</span>
+                    <span className="font-semibold text-slate-800">3</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-slate-600">オンラインメンバー</span>
+                    <span className="font-semibold text-slate-800">4/8</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">クイックアクション</h3>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {setActiveTab('documents'); setIsCreatingDocument(true);}}
+                    className="w-full flex items-center px-4 py-2 border border-cyan-300 rounded-lg hover:bg-cyan-50 text-sm"
+                  >
+                    <PlusCircle className="h-4 w-4 mr-2" />
+                    新規文書作成
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('chat')}
+                    className="w-full flex items-center px-4 py-2 border border-cyan-300 rounded-lg hover:bg-cyan-50 text-sm"
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    チャットを開く
+                  </button>
+                  <button className="w-full flex items-center px-4 py-2 border border-cyan-300 rounded-lg hover:bg-cyan-50 text-sm">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    メンバー招待
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'chat' && (
+          <div className="bg-white rounded-xl shadow-lg border border-cyan-200 h-[600px] flex flex-col">
+            {/* Chat Header */}
+            <div className="p-4 border-b border-cyan-200">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-slate-800">チームチャット</h3>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center text-sm text-slate-500">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    4人がオンライン
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+              {mockChatMessages.map((message) => (
+                <div key={message.id} className="flex items-start space-x-3">
+                  <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white text-sm">
+                    {message.avatar}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium text-slate-800">{message.user}</span>
+                      <span className="text-xs text-slate-500">{message.timestamp}</span>
+                    </div>
+                    <p className="text-slate-700 mt-1">{message.content}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Chat Input */}
+            <div className="p-4 border-t border-cyan-200">
+              <div className="flex items-center space-x-3">
+                <button className="p-2 text-slate-400 hover:text-slate-600">
+                  <Paperclip className="h-5 w-5" />
+                </button>
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={chatMessage}
+                    onChange={(e) => setChatMessage(e.target.value)}
+                    placeholder="メッセージを入力..."
+                    className="w-full px-4 py-2 border border-cyan-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                  />
+                </div>
+                <button className="p-2 text-slate-400 hover:text-slate-600">
+                  <Smile className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={sendMessage}
+                  className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >
+                  <Send className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'documents' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-800">チーム文書</h3>
+              <button
+                onClick={() => setIsCreatingDocument(true)}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+              >
+                <PlusCircle className="h-4 w-4 mr-2" />
+                新規文書作成
+              </button>
+            </div>
+
+            {/* Document Creation Modal */}
+            {isCreatingDocument && (
+              <div className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6">
+                <h4 className="text-lg font-semibold text-slate-800 mb-4">新規文書作成</h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">文書タイトル</label>
+                    <input
+                      type="text"
+                      value={documentTitle}
+                      onChange={(e) => setDocumentTitle(e.target.value)}
+                      placeholder="文書タイトルを入力..."
+                      className="w-full px-3 py-2 border border-cyan-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">初期内容</label>
+                    <textarea
+                      value={documentContent}
+                      onChange={(e) => setDocumentContent(e.target.value)}
+                      placeholder="文書の初期内容を入力..."
+                      rows={6}
+                      className="w-full px-3 py-2 border border-cyan-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                    />
+                  </div>
+                  <div className="flex items-center justify-end space-x-3">
+                    <button
+                      onClick={() => setIsCreatingDocument(false)}
+                      className="px-4 py-2 border border-cyan-300 rounded-md text-sm font-medium text-slate-700 hover:bg-cyan-50"
+                    >
+                      キャンセル
+                    </button>
+                    <button
+                      onClick={createDocument}
+                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                    >
+                      <Save className="h-4 w-4 mr-2 inline" />
+                      作成
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Documents List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {mockDocuments.map((doc) => (
+                <div key={doc.id} className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6 hover:shadow-xl transition-shadow">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold text-slate-800 mb-2">{doc.title}</h4>
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getDocumentStatusColor(doc.status)}`}>
+                        {getDocumentStatusText(doc.status)}
+                      </span>
+                    </div>
+                    <button className="text-slate-400 hover:text-slate-600">
+                      <MoreVertical className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-sm text-slate-600">最終編集: {doc.lastEditor}</p>
+                    <p className="text-xs text-slate-500">{doc.lastEdited}</p>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-sm text-slate-600 mb-2">共同編集者:</p>
+                    <div className="flex items-center space-x-2">
+                      {doc.collaborators.slice(0, 3).map((collaborator, index) => (
+                        <div
+                          key={index}
+                          className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs"
+                        >
+                          {collaborator.charAt(0)}
+                        </div>
+                      ))}
+                      {doc.collaborators.length > 3 && (
+                        <div className="w-6 h-6 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 text-xs">
+                          +{doc.collaborators.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <button className="text-slate-400 hover:text-slate-600">
+                        <Star className="h-4 w-4" />
+                      </button>
+                      <button className="text-slate-400 hover:text-slate-600">
+                        <Pin className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button className="px-3 py-1 border border-cyan-300 rounded text-sm text-slate-700 hover:bg-cyan-50">
+                        <Share2 className="h-4 w-4 mr-1 inline" />
+                        共有
+                      </button>
+                      <button className="px-3 py-1 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+                        <Edit className="h-4 w-4 mr-1 inline" />
+                        編集
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'members' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-800">チームメンバー ({mockTeam.members.length})</h3>
+              <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                <UserPlus className="h-4 w-4 mr-2" />
+                メンバー招待
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {mockTeam.members.map((member) => (
+                <div key={member.id} className="bg-white rounded-xl shadow-lg border border-cyan-200 p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
+                      <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
+                        {member.avatar}
+                      </div>
+                      <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(member.status)} rounded-full border-2 border-white`}></div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-slate-800">{member.name}</h4>
+                      <p className="text-sm text-slate-600">{member.role}</p>
+                      <p className="text-xs text-slate-500">{member.lastSeen}</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center space-x-2">
+                    <button className="flex-1 px-3 py-1 border border-cyan-300 rounded text-sm text-slate-700 hover:bg-cyan-50">
+                      <MessageCircle className="h-4 w-4 mr-1 inline" />
+                      メッセージ
+                    </button>
+                    <button className="flex-1 px-3 py-1 border border-cyan-300 rounded text-sm text-slate-700 hover:bg-cyan-50">
+                      <Mail className="h-4 w-4 mr-1 inline" />
+                      メール
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const SimpleDocumentDetail: React.FC = () => (
   <div className="p-8">
