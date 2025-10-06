@@ -5,12 +5,12 @@ import PageLayout from "./components/layout/PageLayout";
 // import { ThemeProvider } from "./contexts/ThemeContext";
 import About from "./pages/About";
 import DocumentDetail from "./pages/DocumentDetail";
+import KnowledgeGraph from "./pages/KnowledgeGraph";
 import {
   SimpleDashboard,
   SimpleTeams,
   SimpleTeamDetail,
   SimpleDocumentEditor,
-  SimpleKnowledgeGraph,
   SimpleMyPage,
   SimpleDocumentSearch,
 } from "./pages/SimplePages";
@@ -107,7 +107,7 @@ export const router = createBrowserRouter([
         path: "knowledge-graph",
         element: (
           <PageLayout>
-            <SimpleKnowledgeGraph />
+            <KnowledgeGraph />
           </PageLayout>
         ),
       },
